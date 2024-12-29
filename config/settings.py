@@ -25,8 +25,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # App Settings - Add environment-specific defaults
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['http://localhost:3000'])
-WEBSITE_NAME = env.str('WEBSITE_NAME', default='Monitowl')
-WEBSITE_URL = env.str('WEBSITE_URL', default='www.monitowl.com')
+WEBSITE_NAME = env.str('WEBSITE_NAME', default='ABC Website')
+WEBSITE_URL = env.str('WEBSITE_URL', default='www.abc.com')
 ENVIRONMENT = env.str('ENVIRONMENT', default='PROD')  # Add environment setting (PROD / DEV)
 USE_SMTP = env.int('USE_SMTP', default=0)  # Options: 0 - will use console, 1 - will use SMTP
 
@@ -158,7 +158,7 @@ DATABASES = {
                 'max_size': env.int('DB_POOL_MAX_SIZE', default=20),  # Maximum connections in the pool
                 'timeout': env.int('DB_POOL_TIMEOUT', default=30),  # Time to wait for a connection
             },
-            'application_name': 'Monitowl',
+            'application_name': WEBSITE_NAME,
             'options': '-c statement_timeout=5000',  # Set timeout for individual queries
         },
     }
@@ -182,7 +182,7 @@ CACHES = {
             'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',  # Add compression
             'SERIALIZER': 'django_redis.serializers.json.JSONSerializer',  # Use JSON serializer
         },
-        'KEY_PREFIX': f"monitowl_{ENVIRONMENT}",  # Environment-specific prefix
+        'KEY_PREFIX': f"{WEBSITE_NAME}_{ENVIRONMENT}",  # Environment-specific prefix
     }
 }
 
@@ -245,9 +245,11 @@ AXES_COOLOFF_TIME = timedelta(minutes=60)
 # AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 AXES_LOCKOUT_CALLABLE = "core.services.lockout.lockout"
 AXES_FAILURE_LIMIT = env.int('AXES_FAILURE_LIMIT', default=5)
-AXES_IPWARE_META_PRECEDENCE_ORDER = ['HTTP_X_REAL_IP','HTTP_X_FORWARDED_FOR','REMOTE_ADDR']
+AXES_IPWARE_META_PRECEDENCE_ORDER = [
+    'HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'
+]
 AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesStandaloneBackend','django.contrib.auth.backends.ModelBackend'
+    'axes.backends.AxesStandaloneBackend', 'django.contrib.auth.backends.ModelBackend'
 ]
 
 # File Storage - Add S3 configuration
@@ -377,6 +379,6 @@ if USE_SMTP:
     EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', default='')
     EMAIL_PORT = env.int('EMAIL_PORT', default=587)
     EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
-    DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default='no-reply@monitowl.com')
+    DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default=f'no-reply@{WEBSITE_NAME}.com')
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
