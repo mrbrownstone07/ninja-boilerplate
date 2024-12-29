@@ -10,7 +10,7 @@ class AppCreationError(Exception):
 class AppStructureGenerator:
     def __init__(self):
         self.BASE_DIR = Path(__file__).resolve().parent
-        self.SETTINGS_FILE = self.BASE_DIR / "core/settings.py"
+        self.SETTINGS_FILE = self.BASE_DIR / "config/settings.py"
         self.MODULES_DIR = self.BASE_DIR / "modules"
 
     def _generate_app_config(self, app_name: str) -> str:
@@ -56,9 +56,9 @@ for file_name in os.listdir(current_dir):
                 "schemas.py": "#write ninja schemas here",
                 "middlewares.py": """#write your api middlewares here if needed"""
             },
-            "repository": {
-                "__init__.py": "",
-            },
+            # "repository": {
+            #     "__init__.py": "",
+            # },
             "services": {
                 "__init__.py": "",
             },
